@@ -51,7 +51,7 @@ class CNN(luigi.Task):
 
 
     def output(self):
-        return luigi.LocalTarget(f'../outputs/results/result_{self.constants['join_data']}_{self.constants['embeddings']}')
+        return luigi.LocalTarget(f'../outputs/results/result_{self.constants["join_data"]}_{self.constants["embeddings"]}')
 
 
     def write_result(self, result):
