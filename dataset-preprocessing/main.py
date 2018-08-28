@@ -50,8 +50,7 @@ class FormatDataset(luigi.Task):
         log.info(f'{formated_datetime}: {message}')
 
     def output(self):
-        formated_datetime = datetime.datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
-        return luigi.LocalTarget(f'../outputs/cleaned_dataset_{self.dataset["name"]}_{formated_datetime}')
+        return luigi.LocalTarget(f'../outputs/cleaned_dataset_{self.dataset["name"]}')
 
 
 class FormatDbPediaDataset(luigi.Task):

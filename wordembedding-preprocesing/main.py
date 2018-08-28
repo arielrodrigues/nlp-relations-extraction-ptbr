@@ -49,8 +49,7 @@ class PreprocessWordEmbeddings(luigi.Task):
         emite_log(f'has finnished for {self.embedding["name"]}')
 
     def output(self):
-        formated_datetime = datetime.datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
-        return luigi.LocalTarget(f'../outputs/{self.embedding["name"]}_preprocessed_{formated_datetime}')
+        return luigi.LocalTarget(f'../outputs/{self.embedding["name"]}_preprocessed')
 
 
 if __name__ == '__main__':
