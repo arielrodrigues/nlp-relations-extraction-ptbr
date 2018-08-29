@@ -42,8 +42,7 @@ class FormatDataset(luigi.Task):
 
     def write_result(self, result):
         with self.output().open('w') as out_file:
-            for line in result:
-                out_file.write(line + '\n') if line else None
+            out_file.write('\n'.join(list(filter(lambda line: line, result))))
 
     def emite_log(self, message):
         formated_datetime = datetime.datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
