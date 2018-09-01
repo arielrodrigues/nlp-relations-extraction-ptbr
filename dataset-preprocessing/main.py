@@ -37,15 +37,16 @@ class FormatDataset(luigi.Task):
         raw_lines = self.toolset.get_lines_from_file(self.dataset["path"])
         print(f'Dataset has {len(raw_lines)} lines')
         clean_dataset = self.toolset.clean_dataset(raw_lines, self.dataset["lines_per_sentence"])
-        print(f'Cleaned dataset has {len(clean_dataset)} sentences')
         formated_dataset = list(map(self.toolset.get_formated_data, clean_dataset))
         print(f'Formated dataset has {len(formated_dataset)} sentences')
         self.write_result(formated_dataset)
         self.emite_log(f'task has finnished')
 
     def write_result(self, result):
+        cleaned_result = list(filter(lambda line: line is not None, result))
+        print(f'Cleaned sentences has {len(cleaned_result)} sentences')
         with self.output().open('w') as out_file:
-            out_file.write('\n'.join(list(filter(lambda line: line is not None, result))))
+            out_file.write('\n'.join(cleaned_result))
 
     def emite_log(self, message):
         formated_datetime = datetime.datetime.now().strftime('%d-%m-%Y-%H-%M-%S')
