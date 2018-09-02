@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import json
 
 """
 Module Docstring
@@ -87,3 +88,14 @@ def clean_dataset(raw_lines, lines_per_sentence):
         else:
             sentences[count][key] = value
     return sentences
+
+
+def print_number_of_sentences_by_classes(sentences):
+    counters = dict()
+    for sentence in sentences:
+        if sentence is None: continue
+        label = sentence.strip().split('\t')[0]
+        if label in counters.keys(): counters[label] += 1
+        else: counters[label] = 1
+    print('SENTENCES BY CLASSES:')
+    print(json.dumps(counters, indent=2, sort_keys=False))

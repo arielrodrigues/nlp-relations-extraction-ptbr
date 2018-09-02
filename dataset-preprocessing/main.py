@@ -39,6 +39,7 @@ class FormatDataset(luigi.Task):
         clean_dataset = self.toolset.clean_dataset(raw_lines, self.dataset["lines_per_sentence"])
         formated_dataset = list(map(self.toolset.get_formated_data, clean_dataset))
         print(f'Formated dataset has {len(formated_dataset)} sentences')
+        self.toolset.print_number_of_sentences_by_classes(formated_dataset)
         self.write_result(formated_dataset)
         self.emite_log(f'task has finnished')
 
