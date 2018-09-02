@@ -62,13 +62,9 @@ def extract_entities_positions(sentence, entity1, entity2):
     return f'{pos_ent1}\t{pos_ent2}' if (pos_ent1 is not None and pos_ent2 is not None) else None
 
 
-def format_rel_type(rel_type):
-    return f'{rel_type}(e1,e2)'
-
-
 def get_formated_data(data):
     pos = extract_entities_positions(data["SENTENCE"], data["ENTITY1"], data["ENTITY2"])
-    rel_type = format_rel_type(data["REL TYPE"])
+    rel_type = f'{data["REL TYPE"]}'
     sentence = data["SENTENCE"]
     return f'{rel_type}\t{pos}\t{sentence}' if pos else None
 
