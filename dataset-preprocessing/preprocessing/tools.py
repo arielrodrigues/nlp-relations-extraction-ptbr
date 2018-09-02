@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-import spacy
-
-spacy_nlp = spacy.load('pt_core_news_sm')
+import re
 
 """
 Module Docstring
@@ -27,11 +25,8 @@ def extract_key_and_value(line):
     return key, value
 
 
-def extract_tokens_and_entities(sentence):
-    parsed_sentence = spacy_nlp(sentence)
-    tokens = [token.text for token in parsed_sentence]
-    entities = parsed_sentence.ents
-    return tokens, entities
+def tokenize(sentence):
+    return re.findall(r"[\w']+", sentence)
 
 
 def get_lines_from_file(file):
@@ -45,40 +40,26 @@ def find_entity_position_in_tokens(entity, tokens):
     return tokens.index(entity) if (entity in tokens) else None
 
 
-def remove_duplicates_in_list(raw_list):
-    return sorted(set(raw_list), key=raw_list.index)
+def entity_in_tokens(entity, tokens):
+    return entity in tokens
 
 
-def tokenizer(sentence):
-    tokens, entities = extract_tokens_and_entities(sentence)
-    tokens_with_entities = tokens[:]
-    for entity in entities:
-        for index, token in enumerate(tokens):
-            if token in entity.text:
-                tokens_with_entities[index] = entity.text
-
-    return remove_duplicates_in_list(tokens_with_entities)
-
-
-def entities_in_tokens(entity1, entity2, tokens):
-    return entity1 in tokens and entity2 in tokens
+def find_entity_on_tokens(entity, tokens):
+    if not entity_in_tokens(entity, tokens):
+        first_token_entity = tokenize(entity)[0]
+        if not entity_in_tokens(first_token_entity, tokens):
+            return None
+        return find_entity_position_in_tokens(first_token_entity, tokens)
+    return find_entity_position_in_tokens(entity, tokens)
 
 
 def extract_entities_positions(sentence, entity1, entity2):
-    tokens = tokenizer(sentence)
-    pos_ent1, pos_ent2 = None, None
+    tokens = tokenize(sentence)
 
-    if entities_in_tokens(entity1, entity2, tokens):
-        pos_ent1 = find_entity_position_in_tokens(entity1, tokens)
-        pos_ent2 = find_entity_position_in_tokens(entity2, tokens)
-    else:
-        first_token_entity1 = entity1.split()[0]
-        first_token_entity2 = entity2.split()[0]
-        if entities_in_tokens(first_token_entity1, first_token_entity2, tokens):
-            pos_ent1 = find_entity_position_in_tokens(first_token_entity1, tokens)
-            pos_ent2 = find_entity_position_in_tokens(first_token_entity2, tokens)
+    pos_ent1 = find_entity_on_tokens(entity1, tokens)
+    pos_ent2 = find_entity_on_tokens(entity2, tokens)
 
-    return f'{pos_ent1}\t{pos_ent2}' if (pos_ent1 and pos_ent2) else None
+    return f'{pos_ent1}\t{pos_ent2}' if (pos_ent1 is not None and pos_ent2 is not None) else None
 
 
 def format_rel_type(rel_type):
